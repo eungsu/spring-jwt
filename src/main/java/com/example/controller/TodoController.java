@@ -12,7 +12,6 @@ import com.example.payload.todo.AddTodoRequest;
 import com.example.payload.todo.AddTodoResponse;
 import com.example.payload.todo.TodoResponse;
 import com.example.payload.todo.UpdateTodoRequest;
-import com.example.security.LoginUser;
 import com.example.service.TodoService;
 
 import lombok.RequiredArgsConstructor;
@@ -32,17 +31,16 @@ public class TodoController {
 
     @PostMapping
     public ResponseEntity<Response<AddTodoResponse>> save(@RequestBody AddTodoRequest request,
-        @AuthenticationPrincipal LoginUser loginUser) {
+        @AuthenticationPrincipal Long userId) {
 
-        AddTodoResponse data = todoService.addTodo(request, loginUser.getId());
-        
+        AddTodoResponse data = todoService.addTodo(request, userId);
         return ResponseEntity.ok()
             .body(Response.success(data, "새 일정이 등록되었습니다."));
     }
 
     @GetMapping
-    public ResponseEntity<Response<List<TodoResponse>>> list(@AuthenticationPrincipal LoginUser loginUser) {
-        List<TodoResponse> data = todoService.getTodos(loginUser.getId());
+    public ResponseEntity<Response<List<TodoResponse>>> list(@AuthenticationPrincipal Long userId) {
+        List<TodoResponse> data = todoService.getTodos(userId);
 
         return ResponseEntity.ok()
             .body(Response.success(data));
@@ -50,9 +48,9 @@ public class TodoController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Response<TodoResponse>> detail(@PathVariable("id") long todoId,
-        @AuthenticationPrincipal LoginUser loginUser) {
+        @AuthenticationPrincipal Long userId) {
         
-        TodoResponse data = todoService.getTodo(todoId, loginUser.getId());
+        TodoResponse data = todoService.getTodo(todoId, userId);
 
         return ResponseEntity.ok()
             .body(Response.success(data));
@@ -61,9 +59,9 @@ public class TodoController {
     @PutMapping("/{id}")
     public ResponseEntity<Response<TodoResponse>> update(@PathVariable("id") long todoId,
         @RequestBody UpdateTodoRequest request,
-        @AuthenticationPrincipal LoginUser loginUser) {
+        @AuthenticationPrincipal Long userId) {
         
-        TodoResponse data = todoService.updateTodo(todoId, request, loginUser.getId());
+        TodoResponse data = todoService.updateTodo(todoId, request, userId);
 
         return ResponseEntity.ok()
             .body(Response.success(data));    
@@ -71,8 +69,8 @@ public class TodoController {
     
     @DeleteMapping("/{id}")
     public ResponseEntity<Response<Void>> delete(@PathVariable("id") long todoId,
-    @AuthenticationPrincipal LoginUser loginUser) {
-        todoService.deleteTodo(todoId, loginUser.getId());
+    @AuthenticationPrincipal Long userId) {
+        todoService.deleteTodo(todoId, userId);
 
         return ResponseEntity.ok()
             .body(Response.success("일정이 삭제되었습니다."));   
