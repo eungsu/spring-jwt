@@ -22,6 +22,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	private final CustomUserDetailsService customUserDetailsService;
 	
 	@Override
+	@SuppressWarnings("null")
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 		
@@ -33,13 +34,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
         	accessToken = authorizationHeader.substring(7);
         }
-		System.out.println("accessToken: " + accessToken);
 
         if (SecurityContextHolder.getContext().getAuthentication() == null) {
         	if (accessToken != null && jwtUtil.validateAccessToken(accessToken)) {
         		username = jwtUtil.extractUsernameInAccessToken(accessToken);
         	}
-			System.out.println("username: " + username);
+			
         	if (username != null) {
         		LoginUser loginUser = (LoginUser) customUserDetailsService.loadUserByUsername(username); 
         		UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
