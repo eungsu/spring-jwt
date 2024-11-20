@@ -31,20 +31,19 @@
     + TodoResponse.java : 할일 조회 응답정보
     + UpdateTodoRequest.java : 할일 수정 요청정보
   - user : 회원가입에 필요한 정보를 표현하는 클래스를 포함하는 패키지다.
--   + SignupUserRequest.java : 회원가입 요청정보
--   + SignupUserResponse.java : 회원가입 응답정보
+    + SignupUserRequest.java : 회원가입 요청정보
+    + SignupUserResponse.java : 회원가입 응답정보
   - Response.java : 공통 응답정보
 - repository : 데이터베이스 엑세스 작업을 표현하는 인터페이스를 포함하는 패키지다.
   - TodoRepository.java : 할일 정보 CRUD 제공
   - UserRepository.java : 사용자 정보 CRUD 제공
 - security : 시큐리티 및 jwt 관련 클래스를 포함하는 패키지다.
-  - CustomerUserDetails.java : 인증에 필요한 사용자 정보를 제공하는 클래스
-  - CustomerUserDetailsService.java : 사용자 이름으로 사용자정보를 조회하는 기능을 제공하는 클래스
   - JwtAuthenticationFilter.java : JWT를 활용해 사용자 인증을 처리하는 사용자정의 필터다.
   - JwtUtils.java : JWT 토큰을 생성, 검증, 정보 추출 기능을 제공하는 유틸리티 클래스다.
   - SecurityConfig.java : 스프링 시큐리티 설정 클래스다.
 - service : 업무로직을 제공하는 클래스를 포함하는 패키지다.
+  - AuthSerivce.java : 인증 서비스 제공 
   - TodoService.java : 할일 등록, 수정, 조회, 삭제 서비스 제공
-  - UserService.java : 회원가입, 사용자 인증 서비스 제공
+  - UserService.java : 회원가입 서비스 제공
 - AppConfig.java : 애플리케이션 실행에 필요한 빈을 등록시키는 클래스
 - SpringJwtApplication.java : 스프링 부트 애플리케이션의 핵심 클래스
