@@ -9,8 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class TodoResponse {
-    
+public class TodoResponse {        
     private Long id;
     private String title;
     private String description;

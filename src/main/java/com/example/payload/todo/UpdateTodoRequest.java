@@ -11,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class UpdateTodoRequest {
+public class UpdateTodoRequest {    
     private String title;
     private String description;
     @DateTimeFormat(pattern = "yyyy-MM-dd")

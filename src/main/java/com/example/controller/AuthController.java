@@ -18,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
-
 	private final AuthService authService;
 	
 	@PostMapping("/login")
@@ -26,7 +25,7 @@ public class AuthController {
 		AuthResponse data = authService.login(request);
 		
 		return ResponseEntity.ok()
-				.body(Response.success(data, "로그인이 완료되었습니다."));
+			.body(Response.success(data, "로그인이 완료되었습니다."));
 	}
 	
 	@PostMapping("/refresh")
@@ -34,6 +33,6 @@ public class AuthController {
 		AuthResponse data = authService.refreshToken(request);
         
         return ResponseEntity.ok()
-				.body(Response.success(data, "엑세스토큰이 재발급되었습니다."));
+			.body(Response.success(data, "엑세스토큰이 재발급되었습니다."));
 	}
 }

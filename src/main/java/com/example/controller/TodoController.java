@@ -25,14 +25,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 @RestController
 @RequestMapping("/api/todos")
 @RequiredArgsConstructor
-public class TodoController {
-    
+public class TodoController {    
     private final TodoService todoService;
 
     @PostMapping
     public ResponseEntity<Response<AddTodoResponse>> save(@RequestBody AddTodoRequest request,
         @AuthenticationPrincipal Long userId) {
-
         AddTodoResponse data = todoService.addTodo(request, userId);
         return ResponseEntity.ok()
             .body(Response.success(data, "새 일정이 등록되었습니다."));
@@ -48,8 +46,7 @@ public class TodoController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Response<TodoResponse>> detail(@PathVariable("id") long todoId,
-        @AuthenticationPrincipal Long userId) {
-        
+        @AuthenticationPrincipal Long userId) {        
         TodoResponse data = todoService.getTodo(todoId, userId);
 
         return ResponseEntity.ok()
@@ -59,8 +56,7 @@ public class TodoController {
     @PutMapping("/{id}")
     public ResponseEntity<Response<TodoResponse>> update(@PathVariable("id") long todoId,
         @RequestBody UpdateTodoRequest request,
-        @AuthenticationPrincipal Long userId) {
-        
+        @AuthenticationPrincipal Long userId) {        
         TodoResponse data = todoService.updateTodo(todoId, request, userId);
 
         return ResponseEntity.ok()

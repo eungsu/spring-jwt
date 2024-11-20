@@ -17,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
 public class UserController {
-
 	private final UserService userService;
 	
 	@PostMapping("/signup")
@@ -25,7 +24,7 @@ public class UserController {
 		SignupUserResponse signupUserResponse = userService.createUser(request);
 		
 		return ResponseEntity.ok()
-				.body(Response.success(signupUserResponse, "회원가입이 완료되었습니다."));
+			.body(Response.success(signupUserResponse, "회원가입이 완료되었습니다."));
 	}
 	
 }

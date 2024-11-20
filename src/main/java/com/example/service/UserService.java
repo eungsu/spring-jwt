@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-
 	private final ModelMapper modelMapper;
 	private final PasswordEncoder passwordEncoder;
 	private final UserRepository userRepository;

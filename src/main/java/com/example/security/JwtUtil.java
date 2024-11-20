@@ -14,7 +14,6 @@ import io.jsonwebtoken.security.Keys;
 
 @Component
 public class JwtUtil {
-
 	private static final String ACCESS_SECRET = "tvBOmQXZMS1U4je7lM7tI0vIbBPszz13NahgFFe8yx0gjz8HwqpPhUMbvRuATTvXmbvMFHVmbqc3tvl3Rn3JMA4JcnjsTei4";
 	private static final String REFRESH_SECRET = "g4mJNmmPSWkMJqZi1VScYyW8S9uZj5BbpcqeolbzkRvrNObO21P5qTIIloU1X1ZB7j7wLrMPxgzTCAfNi6nN5qrTBUB0ZV9d";	
 	private static final int EXPIRATION_MS = 1000 * 60 * 15;

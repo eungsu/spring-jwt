@@ -20,7 +20,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class Todo {
+public class Todo {    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

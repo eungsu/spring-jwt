@@ -20,8 +20,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class TodoService {
-    
+public class TodoService {    
     private final ModelMapper modelMapper;
     private final TodoRepository todoRepository;
     private final UserRepository userRepository;

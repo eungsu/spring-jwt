@@ -9,8 +9,7 @@ import lombok.Setter;
 @Builder
 @Getter
 @Setter
-public class AuthResponse {
-
+public class AuthResponse {	
 	private String grantType;
 	private String accessToken;
 	private String refreshtoken;
