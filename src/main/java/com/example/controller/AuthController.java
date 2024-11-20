@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.payload.Response;
 import com.example.payload.auth.AuthRequest;
 import com.example.payload.auth.AuthResponse;
-import com.example.payload.auth.RefreshTokenRequest;
 import com.example.service.AuthService;
 
 import lombok.RequiredArgsConstructor;
@@ -28,11 +27,4 @@ public class AuthController {
 			.body(Response.success(data, "로그인이 완료되었습니다."));
 	}
 	
-	@PostMapping("/refresh")
-	public ResponseEntity<Response<AuthResponse>> refresh(@RequestBody RefreshTokenRequest request) {
-		AuthResponse data = authService.refreshToken(request);
-        
-        return ResponseEntity.ok()
-			.body(Response.success(data, "엑세스토큰이 재발급되었습니다."));
-	}
 }

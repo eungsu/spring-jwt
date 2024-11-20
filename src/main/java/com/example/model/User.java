@@ -39,7 +39,4 @@ public class User {
 	
 	@Enumerated(EnumType.STRING)
 	private ERole role;
-	
-	private String refreshToken;
-
 }
