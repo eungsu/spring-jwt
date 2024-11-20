@@ -3,7 +3,6 @@ package com.example.service;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.example.model.ERole;
 import com.example.model.User;
@@ -37,15 +36,4 @@ public class UserService {
 		
 		return modelMapper.map(user, SignupUserResponse.class);
 	}
-	
-	public User getUser(String username) {
-		return userRepository.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
-	}
-	
-	@Transactional
-	public void saveRefreshToken(String username, String refreshToken) {
-		User user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
-		user.setRefreshToken(refreshToken);
-	}
-	
 }

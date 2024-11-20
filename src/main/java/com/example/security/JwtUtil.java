@@ -6,6 +6,8 @@ import javax.crypto.SecretKey;
 
 import org.springframework.stereotype.Component;
 
+import com.example.model.ERole;
+
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -21,12 +23,12 @@ public class JwtUtil {
 	private final SecretKey ACCESS_SECRET_KEY = Keys.hmacShaKeyFor(Decoders.BASE64.decode(ACCESS_SECRET));
 	private final SecretKey REFRESH_SECRET_KEY = Keys.hmacShaKeyFor(Decoders.BASE64.decode(REFRESH_SECRET));
 	
-	public String generateAccessToken(String username) {
-        return createToken(username, ACCESS_SECRET_KEY, EXPIRATION_MS);
+	public String generateAccessToken(Long userId, ERole role) {
+        return createToken(userId, role, ACCESS_SECRET_KEY, EXPIRATION_MS);
     }
 	
-	public String generateRefreshToken(String username) {
-		return createToken(username, REFRESH_SECRET_KEY, REFERSH_EXPIRATION_MS);
+	public String generateRefreshToken(Long userId) {
+		return createToken(userId, REFRESH_SECRET_KEY, REFERSH_EXPIRATION_MS);
 	}
 	
 	public boolean validateAccessToken(String token) {
@@ -37,25 +39,44 @@ public class JwtUtil {
 		return validateToken(token, REFRESH_SECRET_KEY);
 	}
 	
-	public String extractUsernameInAccessToken(String accessToken) {
+	public Long extractUserIdInAccessToken(String accessToken) {
 		return extractUsername(accessToken, ACCESS_SECRET_KEY);
 	}
 	
-	public String extractUsernameInRefreshToken(String refreshTokeon) {
+	public Long extractUserIdInRefreshToken(String refreshTokeon) {
 		return extractUsername(refreshTokeon, REFRESH_SECRET_KEY);
 	}
 	
-	private String extractUsername(String token, SecretKey key) {
-		return Jwts.parser()
-				.verifyWith(key)
-				.build()
-				.parseSignedClaims(token)
-				.getPayload().getSubject();
+	private Long extractUsername(String token, SecretKey key) {
+		return Long.valueOf(Jwts.parser()
+		.verifyWith(key)
+		.build()
+		.parseSignedClaims(token)
+		.getPayload().getSubject());
 	}
-		
-	private String createToken(String username, SecretKey key, int expirationTime) {
+	
+	public ERole extractRoleInAccessToken(String accessToken) {
+		return ERole.valueOf(Jwts.parser()
+		.verifyWith(ACCESS_SECRET_KEY)
+		.build()
+		.parseSignedClaims(accessToken)
+		.getPayload()
+		.get("role", String.class));
+	}
+
+	private String createToken(Long userId, ERole role, SecretKey key, int expirationTime) {
 		return Jwts.builder()
-				.subject(username)
+				.subject(String.valueOf(userId))
+				.claim("role", role.name())
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + expirationTime))
+                .signWith(key)
+                .compact();
+	}
+
+	private String createToken(Long userId, SecretKey key, int expirationTime) {
+		return Jwts.builder()
+				.subject(String.valueOf(userId))
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + expirationTime))
                 .signWith(key)
@@ -73,4 +94,5 @@ public class JwtUtil {
 			return false;
 		}
 	}
+
 }
