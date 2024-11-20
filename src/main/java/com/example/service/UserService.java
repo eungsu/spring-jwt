@@ -4,6 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.exception.JwtException;
 import com.example.model.ERole;
 import com.example.model.User;
 import com.example.payload.user.SignupUserRequest;
@@ -21,10 +22,10 @@ public class UserService {
 
 	public SignupUserResponse createUser(SignupUserRequest request) {
 		if (userRepository.existsByUsername(request.getUsername())) {
-			throw new IllegalArgumentException("사용할 수 없는 사용자이름입니다.");
+			throw new JwtException("사용할 수 없는 사용자이름입니다.");
 		}
 		if (userRepository.existsByEmail(request.getEmail())) {			
-			throw new IllegalArgumentException("사용할 수 없는 이메일입니다.");
+			throw new JwtException("사용할 수 없는 이메일입니다.");
 		}
 		
 		User user = modelMapper.map(request, User.class);

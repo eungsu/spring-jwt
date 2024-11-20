@@ -1,8 +1,10 @@
 package com.example.service;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.exception.JwtException;
 import com.example.model.User;
 import com.example.payload.auth.AuthRequest;
 import com.example.payload.auth.AuthResponse;
@@ -22,7 +24,7 @@ public class AuthService {
     public AuthResponse login(AuthRequest request) {
         User user = userRepository.findByUsername(request.getUsername()).orElseThrow(() -> new IllegalArgumentException("아이디 혹은 비밀번호가 올바르지 않습니다."));
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new IllegalArgumentException("아이디 혹은 비밀번호가 올바르지 않습니다.");
+            throw new JwtException(HttpStatus.UNAUTHORIZED, "아이디 혹은 비밀번호가 올바르지 않습니다.");
         }
 
         String accessToken = jwtUtil.generateAccessToken(user.getId(), user.getRole());
@@ -40,13 +42,13 @@ public class AuthService {
     public AuthResponse refreshToken(RefreshTokenRequest request) {
         String refreshToken = request.getRefreshToken();
 		if (!jwtUtil.validateRefreshToken(refreshToken)) {
-			throw new IllegalArgumentException("유효한 리프레시 토큰이 아닙니다.");
+			throw new JwtException(HttpStatus.UNAUTHORIZED, "유효한 리프레시 토큰이 아닙니다.");
 		}
         Long userId = jwtUtil.extractUserIdInRefreshToken(refreshToken);
     
         User user = userRepository.findById(userId).get();    
         if (!user.getRefreshToken().equals(refreshToken)) {
-        	throw new IllegalArgumentException("유효한 리프레시 토큰이 아닙니다.");
+        	throw new JwtException(HttpStatus.UNAUTHORIZED, "유효한 리프레시 토큰이 아닙니다.");
         }
         String accessToken = jwtUtil.generateAccessToken(user.getId(), user.getRole());
         AuthResponse authResponse = AuthResponse.builder()
