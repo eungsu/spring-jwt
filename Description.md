@@ -47,3 +47,70 @@
   - UserService.java : 회원가입 서비스 제공
 - AppConfig.java : 애플리케이션 실행에 필요한 빈을 등록시키는 클래스
 - SpringJwtApplication.java : 스프링 부트 애플리케이션의 핵심 클래스
+
+## JWT 로그인 요청
+
+아이디/비밀번호를 전달하고, 엑세스 토큰을 발급받는다.
+
+```mermaid
+sequenceDiagram
+  participant A as Client
+  participant F as JwtAuthenticationFilter
+  participant U as JwtUtil
+  participant C as AuthController
+  participant S as AuthService
+  A->>C: 1. 로그인 요청<br>(with username/passsword)
+  C->>S: 2. 사용자 인증
+  S-->>U: 3. AccessToken 생성 요청
+  U->>S: 4. AccessToken 반환
+  S-->>C: 5. AccessToken 발급
+  C-->>A: 6. AccessToken 응답
+```
+
+1. 요청 메세지에 아이디/비밀번호를 포함시켜 서버로 로그인 요청을 보낸다.
+2. AuthRequest객체로 아이디/비밀번호를 받아서 AuthService.login(AuthRequest)를 호출한다.
+3. AuthRequest로 전달받은 아이디/비밀번호로 사용자를 인증 작업을 수행하고, AccessToken을 생성을 요청한다.
+4. JwtUtil은 AccessToken을 생성해서 반환한다.
+5. AuthResponse객체에 AccessToken을 담아서 반환한다.
+6. 응답을 보낸다.
+
+## JWT 인증 
+```mermaid
+sequenceDiagram
+  participant A as Client
+  box  인증(Authentication) 작업
+  participant S as SecurityContext
+  participant F as JwtAuthenticationFilter
+  participant U as JwtUtil
+  end
+  
+  box  인가(Authorization) 작업
+  participant AF as AuthorizationFilter
+  participant D as AuthorizationManager
+  end
+
+  participant C as Controller
+
+  A->>F: 1. AccessToken 전달
+  F->>U: 2. AccessToken 검증 요청
+  U-->>F: 3. AccessToken 검증 결과 반환
+  F->>U: 4. AccessToken에서 사용자정보(아이디, 권한) 추출
+  U-->>F: 5. 사용자장보(아이디, 권한) 반환
+  F-->>S: 6. 사용자정보로 Authentication 생성<br>SecurityContext에 저장 
+
+  AF-->>S: 7. 사용자 인증정보를 참조하기 위해서 Authentication객체 요청
+  AF->>D: 8. Authentication객체를 전달해서 인가작업  위임
+  D->>C: 9. 접근권한이 있으면 사용자의 요청 처리
+  C-->>A: 10. 응답데이터 전달
+```
+
+1. 클라이언트는 요청을 할 때마다 AccessToken을 요청헤더에 포함시켜 보낸다.
+2. JwtAuthenctionFiler는 요청헤더에서 AccessToken를 가져온다. JwtUtil에 AccessToken의 유효성 검증을 요청한다.
+3. JwtUtil은 검증결과를 반환한다.
+4. JwtAuthenticationFilter은 JwtUtil에 사용자정보 추출을 요청한다.
+5. JwtUtil은 사용자아이디, 권한정보를 추출해서 반환한다.
+6. JwtAuthenticationFilter는 AccessToken에서 추출한 사용자 정보(아아디와 권한)로 Authentication객체를 생성하고, SecurityContext에 저장한다.
+7. AuthorizationFilter는 인가작업 수행에 필요한 사용자정보가 포함된 Authentication객체를 가져온다.
+8. AuthoriztionFilter는 AuthorizationManager에 Authorization을 전달해서 인가 작업을 위임한다.
+9. AuthorizationManager는 접근권한을 가지고 있는지 검사하고, 접근권한이 있으면 사용자의 요청을 Spring MVC로 보낸다.
+10. Spring MVC의 컨트롤러는 사용자의 요청을 처리하고 응답을 클라이언트로 보낸다.
